@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp_mqtt_bridge"
+version = "0.1.0"
+description = "An MCP server providing MQTT publish and subscribe tools."
+readme = "README.md" # Optional: Specify if you have a README
+requires-python = ">=3.10"
+license = {text = "MIT"} # Or choose another license
+# Add authors or maintainers if desired
+# authors = [
+#   { name="Your Name", email="your@email.com" },
+# ]
+# maintainers = [
+#   { name="Your Name", email="your@email.com" },
+# ]
+
+# Dependencies are read from requirements.txt by setuptools dynamically
+# If you prefer to list them explicitly, uncomment and add them here:
+dependencies = [
+    "mcp",
+    "paho-mqtt",
+]
+
+# Optional: Add URLs for repository, documentation, etc.
+# [project.urls]
+# "Homepage" = "https://github.com/yourusername/mcp-mqtt-bridge"
+# "Bug Tracker" = "https://github.com/yourusername/mcp-mqtt-bridge/issues"
+
+# Optional: Define entry points if needed
+[project.scripts]
+mqtt-bridge = "mqtt_mcp_server:main" 
