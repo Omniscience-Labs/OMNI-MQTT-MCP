@@ -20,10 +20,6 @@ parser.add_argument('--password', default=os.getenv('MQTT_PASSWORD'), help='MQTT
 # Transport Configuration
 parser.add_argument('--transport', choices=['stdio', 'streamable-http', 'sse'], default='stdio', 
                    help='Transport type (default: stdio)')
-parser.add_argument('--host', default='127.0.0.1', help='HTTP server host (for http/sse transports)')
-parser.add_argument('--http-port', type=int, default=8000, help='HTTP server port (for http/sse transports)')
-parser.add_argument('--path', default='/mcp', help='HTTP server path (default: /mcp for streamable-http, /sse for sse)')
-
 args = parser.parse_args()
 
 # --- MCP Server Setup ---
@@ -219,10 +215,7 @@ def main():
         print(f"🌐 Server URL: http://{args.host}:{args.http_port}{path}")
         print("💡 Recommended for web deployments")
         mcp.run(
-            transport="streamable-http",
-            host=args.host,
-            port=args.http_port,
-            path=path
+            transport="streamable-http"
         )
         
     elif args.transport == 'sse':
