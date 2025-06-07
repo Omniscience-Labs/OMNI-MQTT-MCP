@@ -1,2 +1,3 @@
 mcp
-paho-mqtt 
+paho-mqtt
+uvicorn 

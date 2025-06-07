@@ -10,11 +10,20 @@ from typing import List, Dict, Any
 # --- Configuration ---
 
 parser = argparse.ArgumentParser(description="MCP Server for MQTT Operations")
+# MQTT Configuration
 parser.add_argument('--broker', default=os.getenv('MQTT_BROKER_ADDRESS', 'localhost'), help='MQTT broker address')
 parser.add_argument('--port', type=int, default=int(os.getenv('MQTT_PORT', 1883)), help='MQTT broker port')
 parser.add_argument('--client-id', default=os.getenv('MQTT_CLIENT_ID', 'mcp-mqtt-client'), help='MQTT client ID')
 parser.add_argument('--username', default=os.getenv('MQTT_USERNAME'), help='MQTT username')
 parser.add_argument('--password', default=os.getenv('MQTT_PASSWORD'), help='MQTT password')
+
+# Transport Configuration
+parser.add_argument('--transport', choices=['stdio', 'streamable-http', 'sse'], default='stdio', 
+                   help='Transport type (default: stdio)')
+parser.add_argument('--host', default='127.0.0.1', help='HTTP server host (for http/sse transports)')
+parser.add_argument('--http-port', type=int, default=8000, help='HTTP server port (for http/sse transports)')
+parser.add_argument('--path', default='/mcp', help='HTTP server path (default: /mcp for streamable-http, /sse for sse)')
+
 args = parser.parse_args()
 
 # --- MCP Server Setup ---
@@ -196,15 +205,38 @@ def mqtt_subscribe(topic: str, num_messages: int = 1, timeout: int = 10) -> List
     return received_messages
 
 def main():
-    mcp.run()
+    print(f"🚀 Starting MQTT MCP Server...")
+    print(f"📡 MQTT Broker: {args.broker}:{args.port}")
+    print(f"🚚 Transport: {args.transport}")
+    
+    if args.transport == 'stdio':
+        print("📺 Running in STDIO mode (for local development/Claude Desktop)")
+        mcp.run()
+        
+    elif args.transport == 'streamable-http':
+        # Set default path for streamable-http if not changed
+        path = args.path if args.path != '/mcp' or args.path != '/sse' else '/mcp'
+        print(f"🌐 Server URL: http://{args.host}:{args.http_port}{path}")
+        print("💡 Recommended for web deployments")
+        mcp.run(
+            transport="streamable-http",
+            host=args.host,
+            port=args.http_port,
+            path=path
+        )
+        
+    elif args.transport == 'sse':
+        # Set default path for SSE if not changed  
+        path = args.path if args.path != '/mcp' else '/sse'
+        print(f"🌐 SSE endpoint: http://{args.host}:{args.http_port}{path}")
+        print("⚠️  WARNING: SSE transport is deprecated. Consider using streamable-http.")
+        mcp.run(
+            transport="sse",
+            host=args.host,
+            port=args.http_port,
+            path=path
+        )
 
-# --- Main Execution (for testing if needed) ---
-# Typically, you run this with 'mcp dev mqtt_mcp_server.py'
+# --- Main Execution ---
 if __name__ == "__main__":
-    print("\n--- Running script directly --- ")
     main()
-    print("NOTE: This executes the script definitions but does NOT start the interactive MCP server.")
-    print("Use 'mcp dev mqtt_mcp_server.py' to run the server for development.")
-    # You might add direct execution logic here if needed for specific testing scenarios,
-    # but FastMCP is primarily designed to be run via the 'mcp' command.
-    print(f"Configured for Broker: {args.broker}:{args.port}\n")
