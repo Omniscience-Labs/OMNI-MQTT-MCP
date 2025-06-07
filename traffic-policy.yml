@@ -1,4 +1,16 @@
 on_http_request:
+  - name: Block requests from unauthorized origins
+    expressions:
+      - |
+          !(
+            'https://operator.becomeomni.com' in req.headers['origin'] ||
+            'https://operator.staging.becomeomni.com' in req.headers['origin'] ||
+            'https://dev1.operator.becomeomni.com' in req.headers['origin'] ||
+            'localhost' in req.headers['origin']
+          )
+    actions:
+      - type: deny
+
   - name: Add `robots.txt` to deny all bots and crawlers
     expressions:
       - req.url.contains('/robots.txt')
