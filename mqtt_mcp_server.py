@@ -210,23 +210,15 @@ def main():
         mcp.run()
         
     elif args.transport == 'streamable-http':
-        # Set default path for streamable-http if not changed
-        print(f"🌐 Server URL: http://{args.host}:{args.http_port}{path}")
         print("💡 Recommended for web deployments")
         mcp.run(
             transport="streamable-http"
         )
         
     elif args.transport == 'sse':
-        # Set default path for SSE if not changed  
-        path = args.path if args.path != '/mcp' else '/sse'
-        print(f"🌐 SSE endpoint: http://{args.host}:{args.http_port}{path}")
         print("⚠️  WARNING: SSE transport is deprecated. Consider using streamable-http.")
         mcp.run(
             transport="sse",
-            host=args.host,
-            port=args.http_port,
-            path=path
         )
 
 # --- Main Execution ---
