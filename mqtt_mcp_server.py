@@ -211,7 +211,6 @@ def main():
         
     elif args.transport == 'streamable-http':
         # Set default path for streamable-http if not changed
-        path = args.path if args.path != '/mcp' or args.path != '/sse' else '/mcp'
         print(f"🌐 Server URL: http://{args.host}:{args.http_port}{path}")
         print("💡 Recommended for web deployments")
         mcp.run(
