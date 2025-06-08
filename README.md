@@ -177,6 +177,33 @@ python mqtt_mcp_server.py \
 | **Remote AI agents** | `python mqtt_mcp_server.py --transport streamable-http --host 0.0.0.0` | Supports authentication, scalable |
 | **Legacy systems** | `python mqtt_mcp_server.py --transport sse` | Only if you're already using SSE |
 
+## 🐳 Docker with Ngrok
+
+Run the server inside Docker and automatically expose it with an ngrok tunnel.
+
+### Build
+```bash
+docker build -t mqtt-mcp-ngrok .
+```
+
+### Run
+```bash
+docker run -d \
+  -p 8000:8000 \
+  -e NGROK_AUTHTOKEN=<YOUR_TOKEN> \
+  -e TRANSPORT=sse \
+  -e FASTMCP_PORT=8000 \
+  -e MQTT_BROKER_ADDRESS=mqtt.example.com \
+  -e MQTT_PORT=8883 \
+  -e MQTT_CLIENT_ID=my-client \
+  -e MQTT_USERNAME=prod_user \
+  -e MQTT_PASSWORD=secret123 \
+  mqtt-mcp-ngrok
+```
+The container exposes the MCP server via ngrok. Pass environment variables to
+configure the MQTT broker and server transport. Check the container logs to
+discover the public URL.
+
 ## 📚 Learn More
 
 - [Model Context Protocol Specification](https://spec.modelcontextprotocol.io/)
