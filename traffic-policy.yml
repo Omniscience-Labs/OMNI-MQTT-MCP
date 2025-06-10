@@ -1,13 +1,19 @@
 on_http_request:
-  - name: Block requests from unauthorized origins
+  - name: Allow whitelisted IP addresses and authorized domains
     expressions:
       - |
-          !(
-            'https://operator.becomeomni.com' in req.headers['origin'] ||
-            'https://operator.staging.becomeomni.com' in req.headers['origin'] ||
-            'https://dev1.operator.becomeomni.com' in req.headers['origin'] ||
-            'localhost' in req.headers['origin']
-          )
+        !(
+          conn.client_ip == '44.226.145.213' ||
+          conn.client_ip == '54.187.200.255' ||
+          conn.client_ip == '34.213.214.55' ||
+          conn.client_ip == '35.164.95.156' ||
+          conn.client_ip == '44.230.95.183' ||
+          conn.client_ip == '44.229.200.200' ||
+          'operator.becomeomni.com' in req.headers['host'] ||
+          'operator.staging.becomeomni.com' in req.headers['host'] ||
+          'dev1.operator.becomeomni.com' in req.headers['host'] ||
+          'localhost' in req.headers['host']
+        )
     actions:
       - type: deny
 
