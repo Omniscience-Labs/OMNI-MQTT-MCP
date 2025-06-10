@@ -4,6 +4,8 @@ services:
     image: mcp-mqtt-bridge
     container_name: mcp-mqtt-app
     restart: unless-stopped
+    ports:
+      - "8000:8000"
     environment:
       - TRANSPORT=sse
       - FASTMCP_HOST=0.0.0.0
