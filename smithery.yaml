@@ -1,0 +1,91 @@
+# Smithery configuration file: https://smithery.ai/docs/build/project-config
+
+startCommand:
+  type: stdio
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => {
+      const args = [];
+      // Transport
+      if (config.transport && config.transport !== 'stdio') {
+        args.push('--transport', config.transport);
+      }
+      // MQTT settings via environment
+      const env = {
+        MQTT_BROKER_ADDRESS: config.mqttBrokerAddress,
+        MQTT_PORT: String(config.mqttPort),
+        MQTT_CLIENT_ID: config.mqttClientId || '',
+        MQTT_USERNAME: config.mqttUsername || '',
+        MQTT_PASSWORD: config.mqttPassword || ''
+      };
+      // HTTP transport additional args
+      if (config.transport === 'streamable-http') {
+        if (config.host) {
+          args.push('--host', config.host);
+        }
+        if (config.httpPort) {
+          args.push('--http-port', String(config.httpPort));
+        }
+        if (config.path) {
+          args.push('--path', config.path);
+        }
+      }
+      // Build the command array
+      return {
+        command: 'python',
+        args: ['mqtt_mcp_server.py', ...args],
+        env
+      };
+    }
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - mqttBrokerAddress
+    properties:
+      mqttBrokerAddress:
+        type: string
+        description: MQTT broker address
+      mqttPort:
+        type: number
+        default: 1883
+        description: MQTT broker port
+      mqttClientId:
+        type: string
+        default: mcp-mqtt-client
+        description: MQTT client ID
+      mqttUsername:
+        type: string
+        default: ""
+        description: MQTT username
+      mqttPassword:
+        type: string
+        default: ""
+        description: MQTT password
+      transport:
+        type: string
+        default: stdio
+        description: MCP transport mode
+      host:
+        type: string
+        default: 127.0.0.1
+        description: Host for HTTP transport
+      httpPort:
+        type: number
+        default: 8000
+        description: HTTP port for streamable HTTP transport
+      path:
+        type: string
+        default: /mcp
+        description: URL path for HTTP transport
+  exampleConfig:
+    mqttBrokerAddress: localhost
+    mqttPort: 1883
+    mqttClientId: mcp-mqtt-client
+    mqttUsername: user
+    mqttPassword: pass
+    transport: stdio
+    host: 127.0.0.1
+    httpPort: 8000
+    path: /mcp
