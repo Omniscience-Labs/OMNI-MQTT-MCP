@@ -7,11 +7,17 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Install ngrok
-RUN apt-get update && apt-get install -y wget unzip \
-    && wget -q -O /tmp/ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip \
-    && unzip -d /usr/local/bin /tmp/ngrok.zip \
-    && rm /tmp/ngrok.zip \
-    && apt-get purge -y wget unzip \
+RUN apt-get update && apt-get install -y wget tar \
+    && ARCH=$(dpkg --print-architecture) \
+    && case $ARCH in \
+        amd64)   NARCH="amd64" ;; \
+        arm64)  NARCH="arm64" ;; \
+        *)        echo "Unsupported architecture: $ARCH" >&2; exit 1 ;; \
+    esac \
+    && wget -q -O /tmp/ngrok.tgz "https://ngrok-agent.s3.amazonaws.com/ngrok-v3-stable-linux-${NARCH}.tgz" \
+    && tar xvz -C /usr/local/bin -f /tmp/ngrok.tgz \
+    && rm /tmp/ngrok.tgz \
+    && apt-get purge -y wget tar \
     && apt-get autoremove -y && apt-get clean
 
 # Copy application files
