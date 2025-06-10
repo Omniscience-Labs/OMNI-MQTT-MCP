@@ -1,22 +1,22 @@
 # Stage 1: Download and extract the correct ngrok binary
 FROM debian:bookworm-slim as ngrok_downloader
 
-# Docker's automatic platform ARG
-ARG TARGETARCH
-
-# Install wget, determine ngrok architecture, download, and make executable
+# Install build dependencies, determine architecture, and download the correct ngrok binary
 RUN apt-get update && apt-get install -y wget tar \
-    && case ${TARGETARCH} in \
+    && ARCH=$(dpkg --print-architecture) \
+    && echo "Detected architecture: ${ARCH}" \
+    && case "${ARCH}" in \
         amd64)   NARCH="amd64" ;; \
-        arm64)  NARCH="arm64" ;; \
-        arm) NARCH="arm" ;; \
-        *)        echo "Unsupported architecture: ${TARGETARCH}" >&2; exit 1 ;; \
+        arm64)   NARCH="arm64" ;; \
+        armhf)   NARCH="arm" ;; \
+        armel)   NARCH="arm" ;; \
+        *)       echo "Unsupported architecture by this Dockerfile: ${ARCH}" >&2; exit 1 ;; \
     esac \
+    && echo "Downloading ngrok for architecture: ${NARCH}" \
     && wget -q -O /ngrok.tgz "https://ngrok-agent.s3.amazonaws.com/ngrok-v3-stable-linux-${NARCH}.tgz" \
     && tar xvz -C /usr/local/bin -f /ngrok.tgz \
     && chmod +x /usr/local/bin/ngrok \
-    && apt-get purge -y wget tar \
-    && apt-get autoremove -y && apt-get clean \
+    && apt-get purge -y --autoremove wget tar \
     && rm -rf /var/lib/apt/lists/*
 
 # Stage 2: Build the main application image
