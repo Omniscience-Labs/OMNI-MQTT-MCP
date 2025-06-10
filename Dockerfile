@@ -6,8 +6,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install ngrok
-# This version uses curl and a more robust tar command to prevent extraction errors.
+# Install ngrok with the corrected download URL
 RUN apt-get update && apt-get install -y curl tar \
     && ARCH=$(dpkg --print-architecture) \
     && echo "Detected architecture: ${ARCH}" \
@@ -19,8 +18,8 @@ RUN apt-get update && apt-get install -y curl tar \
         *)       echo "Unsupported architecture: ${ARCH}" >&2; exit 1 ;; \
     esac \
     && echo "Downloading ngrok for architecture: ${NARCH}" \
-    && curl -L -o /tmp/ngrok.tgz "https://ngrok-agent.s3.amazonaws.com/ngrok-v3-stable-linux-${NARCH}.tgz" \
-    && tar xvf /tmp/ngrok.tgz -C /usr/local/bin \
+    && curl -L -o /tmp/ngrok.tgz "https://ngrok-agent.s3.amazonaws.com/ngrok-agent/main/ngrok-v3-stable-linux-${NARCH}.tgz" \
+    && tar xvzf /tmp/ngrok.tgz -C /usr/local/bin \
     && chmod +x /usr/local/bin/ngrok \
     && apt-get purge -y --autoremove curl tar \
     && rm -rf /var/lib/apt/lists/* \
