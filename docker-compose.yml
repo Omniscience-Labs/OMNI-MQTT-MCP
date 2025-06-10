@@ -19,6 +19,6 @@ services:
     network_mode: host
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
-    command: http http://localhost:8000
+    command: http http://0.0.0.0:8000
     depends_on:
       - app 
