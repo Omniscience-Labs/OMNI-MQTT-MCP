@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y wget tar \
     && case $ARCH in \
         amd64)   NARCH="amd64" ;; \
         arm64)  NARCH="arm64" ;; \
+        armhf)  NARCH="arm" ;; \
         *)        echo "Unsupported architecture: $ARCH" >&2; exit 1 ;; \
     esac \
     && wget -q -O /tmp/ngrok.tgz "https://ngrok-agent.s3.amazonaws.com/ngrok-v3-stable-linux-${NARCH}.tgz" \
