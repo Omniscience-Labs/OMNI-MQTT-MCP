@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    image: mcp-mqtt-bridge
+    container_name: mcp-mqtt-app
+    restart: unless-stopped
+    environment:
+      - TRANSPORT=sse
+      - FASTMCP_HOST=0.0.0.0
+      - FASTMCP_PORT=8000
+      - MQTT_BROKER_ADDRESS=${MQTT_BROKER_ADDRESS}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: mcp-mqtt-ngrok
+    restart: unless-stopped
+    ports:
+      - "4040:4040"
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    command: http app:8000
+    depends_on:
+      - app 
