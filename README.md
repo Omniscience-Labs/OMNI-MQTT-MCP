@@ -1,9 +1,20 @@
 # OMNI-MQTT-MCP
 
+[![smithery badge](https://smithery.ai/badge/@Omniscience-Labs/omni-mqtt-mcp)](https://smithery.ai/server/@Omniscience-Labs/omni-mqtt-mcp)
+
 MQTT MCP Server with configurable transport options via CLI: **STDIO** (default), **Streamable HTTP** (recommended for web), and **SSE** (deprecated).
 
 ## 🚀 Quick Start
 
+### Installing via Smithery
+
+To install MQTT Bridge Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@Omniscience-Labs/omni-mqtt-mcp):
+
+```bash
+npx -y @smithery/cli install @Omniscience-Labs/omni-mqtt-mcp --client claude
+```
+
+### Manual Installation
 ```bash
 # Install dependencies
 pip install -r requirements.txt
