@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/omniscience-labs-omni-mqtt-mcp-badge.png)](https://mseep.ai/app/omniscience-labs-omni-mqtt-mcp)
+
 # OMNI-MQTT-MCP
 
 MQTT MCP Server with configurable transport options via CLI: **STDIO** (default), **Streamable HTTP** (recommended for web), and **SSE** (deprecated).
